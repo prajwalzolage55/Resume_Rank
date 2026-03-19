@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 4rem auto;" class="animate-fade">
+    <div class="glass-card" style="padding: 3rem 2.5rem;">
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <div style="width: 64px; height: 64px; background: rgba(16, 185, 129, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fa-solid fa-user-plus" style="font-size: 1.75rem; color: var(--secondary);"></i>
+            </div>
+            <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Create Enterprise Account</h2>
+            <div style="margin-top: 1rem;">
+                <span class="badge {% if request.args.get('role') == 'recruiter' %}badge-blue{% else %}badge-green{% endif %}" style="padding: 0.4rem 1rem;">
+                    Account Type: {{ request.args.get('role', 'candidate')|title }}
+                </span>
+            </div>
+        </div>
+        
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <input type="hidden" name="role" value="{{ request.args.get('role', 'candidate') }}">
+            
+            <div class="form-group">
+                <label for="name">Legal Full Name</label>
+                <input type="text" id="name" name="name" class="form-control" required placeholder="John Q. Applicant">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Professional Email</label>
+                <input type="email" id="email" name="email" class="form-control" required placeholder="name@organization.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Create Secure Password</label>
+                <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem;">
+                Register Profile <i class="fa-solid fa-user-check"></i>
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Already have an identity? <a href="{{ url_for('auth.login') }}" style="font-weight: 600;">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

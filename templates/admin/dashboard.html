@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem;" class="animate-slide">
+    <h2 style="font-size: 2.25rem;">Admin Management Console</h2>
+    <p style="color: var(--text-muted); margin-top: 0.5rem;">Global platform oversight and user authorization control.</p>
+</div>
+
+<div class="animate-fade" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; animation-delay: 0.2s;">
+    <div class="glass-card" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary); font-family: 'Outfit';">{{ total_users }}</div>
+        <p style="color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; margin-top: 0.5rem;">Registered Users</p>
+    </div>
+    <div class="glass-card" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--secondary); font-family: 'Outfit';">{{ total_jobs }}</div>
+        <p style="color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; margin-top: 0.5rem;">Live Opportunities</p>
+    </div>
+    <div class="glass-card" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--info); font-family: 'Outfit';">{{ total_resumes }}</div>
+        <p style="color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; margin-top: 0.5rem;">Models Processed</p>
+    </div>
+</div>
+
+<div class="glass-card animate-fade" style="animation-delay: 0.4s;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-size: 1.25rem;">User Directory</h3>
+        <div style="display: flex; gap: 0.5rem;">
+            <span class="badge badge-green">Operational</span>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Identified User</th>
+                    <th>Account Type</th>
+                    <th>Authorization</th>
+                    <th style="text-align: right;">Administrative Control</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="animate-fade" style="animation-delay: {{ 0.5 + loop.index0 * 0.05 }}s;">
+                    <td>
+                        <div style="font-weight: 600; color: var(--text-main);">{{ user.name }}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-dim);">{{ user.email }}</div>
+                    </td>
+                    <td>
+                        <span class="badge {% if user.role == 'super_admin' %}badge-blue{% elif user.role == 'recruiter' %}badge-yellow{% else %}badge-green{% endif %}" style="font-size: 0.65rem;">
+                            {{ user.role }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if user.status == 'approved' %}
+                            <div style="display: flex; align-items: center; gap: 0.4rem; color: #34d399; font-size: 0.85rem; font-weight: 500;">
+                                <i class="fa-solid fa-circle-check" style="font-size: 0.7rem;"></i> Approved
+                            </div>
+                        {% else %}
+                            <div style="display: flex; align-items: center; gap: 0.4rem; color: #fbbf24; font-size: 0.85rem; font-weight: 500;">
+                                <i class="fa-solid fa-clock" style="font-size: 0.7rem;"></i> Pending Approval
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.6rem; justify-content: flex-end;">
+                            {% if user.status == 'pending' %}
+                            <form action="{{ url_for('admin.approve_recruiter', user_id=user._id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-primary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 8px;">
+                                    <i class="fa-solid fa-check-double"></i> Authorize
+                                </button>
+                            </form>
+                            {% endif %}
+                            
+                            {% if user.role != 'super_admin' %}
+                            <form action="{{ url_for('admin.delete_user', user_id=user._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Immediately terminate this account?');">
+                                <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.6rem; font-size: 0.75rem; border-radius: 8px;">
+                                    <i class="fa-solid fa-user-minus"></i> Remove
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

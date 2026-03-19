@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem;" class="animate-slide">
+    <h2 style="font-size: 2.25rem;">Candidate Dashboard</h2>
+    <p style="color: var(--text-muted); margin-top: 0.5rem;">Track your AI matching journey and optimize your profile.</p>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr 2fr; align-items: start;">
+    
+    <!-- Profile & Upload Sidebar -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="glass-card animate-fade" style="animation-delay: 0.2s; padding: 1.75rem;">
+            <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-file-invoice" style="color: var(--primary);"></i> My Resume
+            </h3>
+            
+            {% if resume %}
+                <div style="margin-bottom: 2rem; padding: 1.25rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 16px;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-file-pdf" style="font-size: 1.25rem; color: var(--danger);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 1rem; margin: 0;">Active Profile</h4>
+                            <p style="color: var(--text-dim); font-size: 0.75rem;">Analyzed by Neural Engine</p>
+                        </div>
+                    </div>
+                    
+                    <h5 style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Key Skills Found</h5>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        {% for skill in resume.skills[:8] %}
+                            <span class="badge badge-green" style="font-size: 0.65rem;">{{ skill }}</span>
+                        {% endfor %}
+                        {% if resume.skills|length > 8 %}
+                            <span class="badge badge-green" style="font-size: 0.65rem; opacity: 0.7;">+{{ resume.skills|length - 8 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div style="margin-bottom: 1.5rem; padding: 1.25rem; background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.2); border-radius: 16px; text-align: center;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--warning); margin-bottom: 1rem;"></i>
+                    <p style="font-size: 0.85rem; color: var(--warning);">Upload your resume to begin the matching process.</p>
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('candidate.upload_resume') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="resume" style="font-size: 0.75rem;">{% if resume %}Replace PDF{% else %}Select PDF{% endif %}</label>
+                    <input type="file" id="resume" name="resume" accept="application/pdf" class="form-control" required style="font-size: 0.85rem; padding: 0.6rem;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Process Resume
+                </button>
+                <p style="color: var(--text-dim); font-size: 0.75rem; margin-top: 1rem; text-align: center; line-height: 1.4;">
+                   A new upload will trigger an immediate re-ranking against all open positions.
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Matches Section -->
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;" class="animate-fade" style="animation-delay: 0.3s;">
+            <h3 style="font-size: 1.5rem;">Intelligent Matches</h3>
+            <span class="badge badge-blue">{{ matches|length }} Opportunities</span>
+        </div>
+        
+        {% if matches %}
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {% for match in matches %}
+                <div class="glass-card animate-fade" style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; animation-delay: {{ 0.4 + loop.index0 * 0.1 }}s;">
+                    <div style="max-width: 70%;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <h4 style="font-size: 1.1rem; color: var(--text-main);">{{ match.job_info.job_title }}</h4>
+                        </div>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            {% for skill in match.job_info.skills_required[:5] %}
+                                <span class="badge badge-blue" style="font-size: 0.6rem; padding: 0.2rem 0.6rem;">{{ skill }}</span>
+                            {% endfor %}
+                            {% if match.job_info.skills_required|length > 5 %}
+                                <span class="badge badge-blue" style="font-size: 0.6rem; padding: 0.2rem 0.6rem; opacity: 0.6;">+{{ match.job_info.skills_required|length - 5 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="text-align: right; min-width: 100px;">
+                        <div style="font-family: 'Outfit'; font-size: 1.75rem; font-weight: 800; color: {% if match.similarity_score > 80 %}#10b981{% elif match.similarity_score > 60 %}#f59e0b{% else %}#ef4444{% endif %}; line-height: 1;">
+                            {{ match.similarity_score|int }}%
+                        </div>
+                        <span style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Probability Match</span>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-card animate-fade" style="text-align: center; padding: 5rem 2rem; animation-delay: 0.4s;">
+                <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 2.5rem; color: var(--border);"></i>
+                </div>
+                <h4 style="color: var(--text-muted);">Finding your next challenge...</h4>
+                <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">
+                    {% if resume %}We're searching the grid. Check back soon for new requisitions!{% else %}Please upload your resume to activate the neural matching engine.{% endif %}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

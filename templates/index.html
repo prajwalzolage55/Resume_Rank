@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-gradient"></div>
+    
+    <h1 class="hero-title animate-fade">
+        Elevate Your Hiring with <br>
+        <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Recruitment Intelligence</span>
+    </h1>
+    
+    <p class="hero-subtitle animate-fade" style="animation-delay: 0.1s;">
+        ResumeRank uses advanced Neural Language Models to automate screening, ranking, and skill gap analysis—empowering teams to find the perfect match in seconds.
+    </p>
+    
+    {% if not session.get('user_id') %}
+    <div class="animate-fade" style="display: flex; gap: 1.25rem; justify-content: center; animation-delay: 0.2s;">
+        <a href="{{ url_for('auth.register') }}?role=recruiter" class="btn btn-primary">
+            <i class="fa-solid fa-briefcase"></i> I am a Recruiter
+        </a>
+        <a href="{{ url_for('auth.register') }}?role=candidate" class="btn btn-secondary">
+            <i class="fa-solid fa-user-tie"></i> I am a Candidate
+        </a>
+    </div>
+    {% else %}
+    <div class="animate-fade" style="animation-delay: 0.2s;">
+        {% if session.get('role') == 'super_admin' %}
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">Access Admin Console <i class="fa-solid fa-arrow-right"></i></a>
+        {% elif session.get('role') == 'recruiter' %}
+            <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-primary">Go to Recruiter Panel <i class="fa-solid fa-arrow-right"></i></a>
+        {% else %}
+            <a href="{{ url_for('candidate.dashboard') }}" class="btn btn-primary">Go to Dashboard <i class="fa-solid fa-arrow-right"></i></a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="feature-grid animate-fade" style="animation-delay: 0.4s;">
+        <div class="glass-card">
+            <div style="width: 54px; height: 54px; background: rgba(79, 70, 229, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-microchip" style="font-size: 1.5rem; color: var(--primary);"></i>
+            </div>
+            <h3>Neural Parsing</h3>
+            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
+                State-of-the-art PDF extraction powered by spaCy and industrial-grade NLP libraries.
+            </p>
+        </div>
+        
+        <div class="glass-card">
+            <div style="width: 54px; height: 54px; background: rgba(16, 185, 129, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-ranking-star" style="font-size: 1.5rem; color: var(--secondary);"></i>
+            </div>
+            <h3>Semantic Ranking</h3>
+            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
+                Sentence Transformers map resumes to dense vector spaces for mathematically precise matching.
+            </p>
+        </div>
+        
+        <div class="glass-card">
+            <div style="width: 54px; height: 54px; background: rgba(245, 158, 11, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-brain" style="font-size: 1.5rem; color: var(--warning);"></i>
+            </div>
+            <h3>LLM Insights</h3>
+            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
+                Deep analysis using Llama 3 models provides qualitative feedback and skill gap reports for every application.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeRank | Enterprise AI Screening</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Meta for Theme -->
+    <meta name="theme-color" content="#060912">
+    <meta name="description" content="AI-Powered Resume Ranking and Recruitment Intelligence Platform.">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/" style="color:inherit;text-decoration:none;"><i class="fa-solid fa-bolt-lightning"></i> ResumeRank</a>
+        </div>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+                <span class="nav-user-greeting" style="color: var(--text-dim); margin-right: 1rem; font-size: 0.85rem;">Welcome, <strong style="color: var(--text-main);">{{ session.get('name') }}</strong></span>
+                
+                {% if session.get('role') == 'super_admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="nav-link">Admin Console</a>
+                {% elif session.get('role') == 'recruiter' %}
+                    <a href="{{ url_for('recruiter.dashboard') }}" class="nav-link">Recruiter Panel</a>
+                {% elif session.get('role') == 'candidate' %}
+                    <a href="{{ url_for('candidate.dashboard') }}" class="nav-link">My Dashboard</a>
+                {% endif %}
+                
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding: 0.5rem 1.25rem; border-radius: 10px;">Get Started</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container animate-fade">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-circle-xmark{% else %}fa-circle-info{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="nav-brand" style="justify-content: center; font-size: 1.25rem; opacity: 0.7;">
+                <i class="fa-solid fa-bolt-lightning"></i> ResumeRank
+            </div>
+            <p>&copy; 2026 ResumeRank. Built with high-performance AI and modern architecture.</p>
+            <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 0.9rem;">
+                <a href="#" style="color: var(--text-dim);">Privacy Policy</a>
+                <a href="#" style="color: var(--text-dim);">Terms of Service</a>
+                <a href="#" style="color: var(--text-dim);">Contact Support</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

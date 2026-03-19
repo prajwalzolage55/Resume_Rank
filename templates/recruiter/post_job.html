@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;" class="animate-slide">
+        <div>
+            <h2 style="font-size: 2rem;">Post a New Job</h2>
+            <p style="color: var(--text-muted); margin-top: 0.25rem;">Define your requirements and find matches instantly.</p>
+        </div>
+        <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-chevron-left"></i> Dashboard
+        </a>
+    </div>
+
+    <div class="glass-card animate-fade" style="animation-delay: 0.2s;">
+        <form method="POST" action="{{ url_for('recruiter.post_job') }}">
+            <div class="form-group">
+                <label for="title">Position Title</label>
+                <input type="text" id="title" name="title" class="form-control" required placeholder="e.g. Senior Backend Engineer">
+            </div>
+            
+            <div class="form-group">
+                <label for="skills_required">Required Skill Stack (Comma separated)</label>
+                <input type="text" id="skills_required" name="skills_required" class="form-control" required placeholder="e.g. Python, AWS, Docker, PostgreSQL">
+                <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-dim); font-size: 0.8rem;">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Skills are used for mathematical vector matching.</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Detailed Job Description</label>
+                <textarea id="description" name="description" class="form-control" rows="10" required placeholder="Outline the role, expectations, and unique value proposition..."></textarea>
+            </div>
+            
+            <div style="margin-top: 2.5rem;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                    <i class="fa-solid fa-rocket"></i> Publish & Match Candidates
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

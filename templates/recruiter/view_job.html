@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem;" class="animate-slide">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                <span class="badge badge-blue">Job Requisition</span>
+                <span style="color: var(--text-dim); font-size: 0.85rem;">Posted {{ job.created_at.strftime('%B %d, %Y') if job.created_at else 'N/A' }}</span>
+            </div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">{{ job.job_title }}</h2>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                {% for skill in job.skills_required %}
+                    <span class="badge badge-blue">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-chevron-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr 2fr; align-items: start;">
+    <!-- Job details sidebar -->
+    <div class="glass-card animate-fade" style="padding: 1.5rem; animation-delay: 0.2s;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-main);">Summary</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap;">{{ job.job_description }}</p>
+    </div>
+
+    <!-- Candidates Main View -->
+    <div>
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">AI-Ranked Pipeline</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Candidates are sorted by semantic similarity to the job profile.</p>
+        </div>
+        
+        {% if matches %}
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            {% for match in matches %}
+                <div class="glass-card animate-fade" style="padding: 1.5rem; animation-delay: {{ 0.3 + loop.index0 * 0.1 }}s;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                                <span style="font-family: 'Outfit'; font-weight: 800; color: var(--primary); font-size: 1.25rem;">#{{ loop.index }}</span>
+                                <h4 style="font-size: 1.2rem;">{{ match.candidate_info.name }}</h4>
+                            </div>
+                            <p style="color: var(--text-dim); font-size: 0.85rem;"><i class="fa-solid fa-envelope" style="font-size: 0.7rem;"></i> {{ match.candidate_info.email }}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.75rem; font-weight: 800; color: {% if match.similarity_score > 80 %}#10b981{% elif match.similarity_score > 60 %}#f59e0b{% else %}#ef4444{% endif %}; line-height: 1;">
+                                {{ match.similarity_score|int }}%
+                            </div>
+                            <span style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Match Score</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h5 style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em;">Retrieved Skillset</h5>
+                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                {% if match.resume_info and match.resume_info.skills %}
+                                    {% for skill in match.resume_info.skills[:12] %}
+                                        <span class="badge badge-green" style="font-size: 0.65rem;">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if match.resume_info.skills|length > 12 %}
+                                        <span class="badge badge-green" style="font-size: 0.65rem; opacity: 0.7;">+{{ match.resume_info.skills|length - 12 }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span style="color: var(--text-dim); font-size: 0.85rem; font-style: italic;">Parsing analytical data...</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h5 style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">AI Deep Analysis</h5>
+                                {% if not match.skill_gap %}
+                                <form action="{{ url_for('recruiter.analyze_candidate', job_id=job._id, candidate_id=match.candidate_id) }}" method="POST">
+                                    <button type="submit" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.7rem; border-radius: 8px;">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            
+                            {% if match.skill_gap %}
+                                <div class="analysis-output">{{ match.skill_gap }}</div>
+                            {% else %}
+                                <div style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                                    <p style="font-size: 0.8rem; color: var(--text-dim); font-style: italic;">No semantic insights generated yet.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-card" style="text-align: center; padding: 5rem 2rem;">
+                <i class="fa-solid fa-users-slash" style="font-size: 3.5rem; color: var(--border); margin-bottom: 1.5rem;"></i>
+                <h4 style="color: var(--text-muted);">No candidates matched yet.</h4>
+                <p style="color: var(--text-dim); font-size: 0.95rem;">Available candidates will be automatically ranked when they upload resumes.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

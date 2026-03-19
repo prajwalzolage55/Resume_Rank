@@ -1,0 +1,14 @@
+Flask
+Flask-PyMongo
+pymongo
+python-dotenv
+bcrypt
+PyJWT
+PyPDF2
+spacy
+nltk
+sentence-transformers
+scikit-learn
+langchain
+langchain-groq
+pandas

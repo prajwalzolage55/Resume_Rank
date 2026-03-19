@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 4rem auto;" class="animate-fade">
+    <div class="glass-card" style="padding: 3rem 2.5rem;">
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <div style="width: 64px; height: 64px; background: rgba(79, 70, 229, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 1.75rem; color: var(--primary);"></i>
+            </div>
+            <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Welcome Back</h2>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Elevate your recruitment journey today.</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <label for="email">Corporate Identity</label>
+                <input type="email" id="email" name="email" class="form-control" required placeholder="name@company.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Access Key</label>
+                <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem;">
+                Authenticate <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                New to the platform? <a href="{{ url_for('auth.register') }}" style="font-weight: 600;">Initialize Account</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap;" class="animate-slide">
+    <div>
+        <h2 style="font-size: 2.25rem;">Recruiter Panel</h2>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Orchestrate your talent pipeline with AI-driven matching.</p>
+    </div>
+    <a href="{{ url_for('recruiter.post_job') }}" class="btn btn-primary" style="padding: 0.8rem 1.6rem;">
+        <i class="fa-solid fa-plus-circle"></i> Create New Requisition
+    </a>
+</div>
+
+<div class="glass-card animate-fade" style="animation-delay: 0.2s;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-size: 1.25rem; color: var(--text-main);">Active Opportunities</h3>
+        <span class="badge badge-blue">{{ jobs|length }} Active</span>
+    </div>
+    
+    {% if jobs %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Job Requisition</th>
+                    <th>Core Skillset</th>
+                    <th>Posted Date</th>
+                    <th style="text-align: right;">Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr class="animate-fade" style="animation-delay: {{ 0.3 + loop.index0 * 0.1 }}s;">
+                    <td>
+                        <div style="font-weight: 600; color: var(--text-main);">{{ job.job_title }}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-dim);">ID: {{ job._id|string|truncate(12, True, '') }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            {% for skill in job.skills_required[:3] %}
+                                <span class="badge badge-blue" style="font-size: 0.65rem;">{{ skill }}</span>
+                            {% endfor %}
+                            {% if job.skills_required|length > 3 %}
+                                <span class="badge badge-blue" style="font-size: 0.65rem; opacity: 0.7;">+{{ job.skills_required|length - 3 }}</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-size: 0.85rem;">{{ job.created_at.strftime('%Y-%m-%d') if job.created_at else 'N/A' }}</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                            <a href="{{ url_for('recruiter.view_job', job_id=job._id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                <i class="fa-solid fa-users-viewfinder"></i> Pipeline
+                            </a>
+                            <form action="{{ url_for('recruiter.delete_job', job_id=job._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Archive this requisition?');">
+                                <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.6rem; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 1rem;">
+        <div style="width: 64px; height: 64px; background: var(--glass-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+            <i class="fa-solid fa-folder-open" style="font-size: 1.5rem; color: var(--text-dim);"></i>
+        </div>
+        <p style="color: var(--text-muted);">Your talent pipeline is empty. Post a job to start matching.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
