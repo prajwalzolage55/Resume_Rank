@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.idea/
+.vscode/
+uploads/
+*.log
+.DS_Store
+pip_output*.txt
+test_output.txt
+node_modules/
+dist/
+build/
+*.bak
+*.swp
