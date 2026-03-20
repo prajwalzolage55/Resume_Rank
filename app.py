@@ -389,8 +389,8 @@ def create_app(config_name='default'):
     def index(): return render_template('index.html')
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    # In production, we should use a production server like gunicorn,
-    # but for local testing or simple deployment, this handles the port.
-    create_app().run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port)
