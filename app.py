@@ -35,7 +35,7 @@ class ProductionConfig(Config):
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
-    'default': DevelopmentConfig
+    'default': DevelopmentConfig if os.environ.get('FLASK_ENV') != 'production' else ProductionConfig
 }
 
 # --- EXTENSIONS ---
@@ -384,4 +384,7 @@ def create_app(config_name='default'):
     return app
 
 if __name__ == '__main__':
-    create_app().run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    # In production, we should use a production server like gunicorn,
+    # but for local testing or simple deployment, this handles the port.
+    create_app().run(host='0.0.0.0', port=port)
