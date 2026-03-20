@@ -1,6 +1,8 @@
 import os
 import re
 import datetime
+import sys
+import logging
 import PyPDF2
 import spacy
 import nltk
@@ -375,6 +377,7 @@ def upload_resume():
 
 # --- APP FACTORY ---
 def create_app(config_name='default'):
+    print(f"Creating app with config: {config_name}", flush=True)
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     mongo.init_app(app)
@@ -389,7 +392,9 @@ def create_app(config_name='default'):
     def index(): return render_template('index.html')
     return app
 
+print("Pre-creating app instance...", flush=True)
 app = create_app()
+print("App instance created successfully.", flush=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
