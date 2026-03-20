@@ -12,3 +12,5 @@ scikit-learn
 langchain
 langchain-groq
 pandas
+numpy
+gunicorn
