@@ -8,5 +8,8 @@ pip install -r requirements.txt
 # Download Spacy model
 python -m spacy download en_core_web_sm
 
-# Download NLTK data (optional if handle differently in app.py, but safer here)
+# Download NLTK data
 python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
+
+# Pre-download SentenceTransformer model
+python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"

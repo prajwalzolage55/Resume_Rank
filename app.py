@@ -42,20 +42,25 @@ config = {
 mongo = PyMongo()
 
 # --- UTILS: NLP & DOWNLOADS ---
+_nlp = None
+
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        try:
+            _nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            import subprocess
+            import sys
+            subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+            _nlp = spacy.load("en_core_web_sm")
+    return _nlp
+
 try:
     nltk.download('punkt', quiet=True)
     nltk.download('stopwords', quiet=True)
 except Exception:
     pass
-
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    import subprocess
-    # Using sys.executable to ensure we use the same python environment
-    import sys
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-    nlp = spacy.load("en_core_web_sm")
 
 COMMON_SKILLS = [
     'python', 'java', 'c++', 'c#', 'javascript', 'typescript', 'html', 'css', 
@@ -77,6 +82,7 @@ def clean_text(text):
 def extract_skills(text):
     cleaned = clean_text(text)
     found_skills = set()
+    # nlp = get_nlp()  # We could use nlp for more advanced extraction, but the current logic uses regex
     for skill in COMMON_SKILLS:
         escaped_skill = re.escape(skill)
         if re.search(r'\b' + escaped_skill + r'\b', cleaned):
