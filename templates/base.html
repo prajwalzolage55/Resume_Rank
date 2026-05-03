@@ -3,45 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResumeRank | Enterprise AI Screening</title>
+    <title>{% block page_title %}ResumeRank | AI Recruitment Intelligence{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Meta for Theme -->
-    <meta name="theme-color" content="#060912">
-    <meta name="description" content="AI-Powered Resume Ranking and Recruitment Intelligence Platform.">
+    <meta name="theme-color" content="#FFFFFF">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">
-            <a href="/" style="color:inherit;text-decoration:none;"><i class="fa-solid fa-bolt-lightning"></i> ResumeRank</a>
-        </div>
-        <div class="nav-links">
-            {% if session.get('user_id') %}
-                <span class="nav-user-greeting" style="color: var(--text-dim); margin-right: 1rem; font-size: 0.85rem;">Welcome, <strong style="color: var(--text-main);">{{ session.get('name') }}</strong></span>
-                
-                {% if session.get('role') == 'super_admin' %}
-                    <a href="{{ url_for('admin.dashboard') }}" class="nav-link">Admin Console</a>
-                {% elif session.get('role') == 'recruiter' %}
-                    <a href="{{ url_for('recruiter.dashboard') }}" class="nav-link">Recruiter Panel</a>
-                {% elif session.get('role') == 'candidate' %}
-                    <a href="{{ url_for('candidate.dashboard') }}" class="nav-link">My Dashboard</a>
+        <div class="container nav-content">
+            <a href="/" class="brand">
+                <i class="fa-solid fa-bolt-lightning"></i> ResumeRank
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="document.getElementById('navLinks').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                {% if session.get('user_id') %}
+                    <span class="text-secondary text-sm" style="padding: 0.5rem 0;">
+                        Signed in as <strong class="text-primary">{{ session.get('name') }}</strong>
+                    </span>
+                    
+                    {% if session.get('role') == 'super_admin' %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">Admin Console</a>
+                    {% elif session.get('role') == 'recruiter' %}
+                        <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-outline">Recruiter Hub</a>
+                    {% elif session.get('role') == 'candidate' %}
+                        <a href="{{ url_for('candidate.dashboard') }}" class="btn btn-outline">My Profile</a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost">Sign Out</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="nav-link" style="padding: 0.5rem 0;">Sign In</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
                 {% endif %}
-                
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary" style="padding: 0.5rem 1rem; border-radius: 10px;">Logout</a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding: 0.5rem 1.25rem; border-radius: 10px;">Get Started</a>
-            {% endif %}
+            </div>
         </div>
     </nav>
 
-    <div class="container animate-fade">
+    <main style="flex: 1;">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages">
+                <div class="container" style="padding-top: 2rem;">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
+                    <div class="alert alert-{{ category }} animate-fade-up">
                         <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-circle-xmark{% else %}fa-circle-info{% endif %}"></i>
                         {{ message }}
                     </div>
@@ -49,22 +55,47 @@
                 </div>
             {% endif %}
         {% endwith %}
-        
-        {% block content %}{% endblock %}
-    </div>
 
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
     <footer class="footer">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
-            <div class="nav-brand" style="justify-content: center; font-size: 1.25rem; opacity: 0.7;">
-                <i class="fa-solid fa-bolt-lightning"></i> ResumeRank
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand"><i class="fa-solid fa-bolt-lightning"></i> ResumeRank</div>
+                    <p class="footer-text">Accelerating the world's talent acquisition through precise, semantic AI matching and neural language models.</p>
+                </div>
+                <div>
+                    <h4>Platform</h4>
+                    <div class="footer-links">
+                        <a href="#">For Enterprises</a>
+                        <a href="#">For Startups</a>
+                        <a href="#">For Candidates</a>
+                        <a href="#">Pricing</a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#">Documentation</a>
+                        <a href="#">API Reference</a>
+                        <a href="#">Security</a>
+                        <a href="#">Contact Support</a>
+                    </div>
+                </div>
             </div>
-            <p>&copy; 2026 ResumeRank. Built with high-performance AI and modern architecture.</p>
-            <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 0.9rem;">
-                <a href="#" style="color: var(--text-dim);">Privacy Policy</a>
-                <a href="#" style="color: var(--text-dim);">Terms of Service</a>
-                <a href="#" style="color: var(--text-dim);">Contact Support</a>
+            <div class="footer-bottom">
+                <div>&copy; 2026 ResumeRank Inc. All rights reserved.</div>
+                <div class="flex gap-2 text-xl">
+                    <a href="#" style="color: inherit;"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" style="color: inherit;"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" style="color: inherit;"><i class="fa-brands fa-github"></i></a>
+                </div>
             </div>
         </div>
     </footer>
+    {% endblock %}
 </body>
 </html>

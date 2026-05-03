@@ -1,35 +1,50 @@
 {% extends "base.html" %}
+{% block page_title %}Sign In | ResumeRank{% endblock %}
+
+{% block footer %}{% endblock %}
 
 {% block content %}
-<div style="max-width: 440px; margin: 4rem auto;" class="animate-fade">
-    <div class="glass-card" style="padding: 3rem 2.5rem;">
-        <div style="text-align: center; margin-bottom: 2.5rem;">
-            <div style="width: 64px; height: 64px; background: rgba(79, 70, 229, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                <i class="fa-solid fa-shield-halved" style="font-size: 1.75rem; color: var(--primary);"></i>
+<div class="split-layout animate-fade-up">
+    <!-- Form Side -->
+    <div class="split-form">
+        <div class="form-card">
+            <div style="margin-bottom: 2.5rem;">
+                <div class="badge badge-orange" style="margin-bottom: 1rem;"><i class="fa-solid fa-lock" style="margin-right: 0.5rem;"></i> Secure Access</div>
+                <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Welcome back</h2>
+                <p class="text-secondary">Sign in to your account to continue.</p>
             </div>
-            <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Welcome Back</h2>
-            <p style="color: var(--text-dim); font-size: 0.9rem;">Elevate your recruitment journey today.</p>
+
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" required placeholder="name@company.com">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-wrapper" style="position: relative;">
+                        <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••" style="padding-right: 2.5rem;">
+                        <button type="button" class="password-toggle" onclick="const p=document.getElementById('password'); const i=this.querySelector('i'); if(p.type==='password'){p.type='text'; i.classList.replace('fa-eye', 'fa-eye-slash');}else{p.type='password'; i.classList.replace('fa-eye-slash', 'fa-eye');}" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.25rem;">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.875rem; margin-top: 1rem;">
+                    Sign In
+                </button>
+            </form>
+
+            <div style="margin-top: 2rem; text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
+                Don't have an account? <a href="{{ url_for('auth.register') }}" class="font-bold">Create one now</a>
+            </div>
         </div>
-        
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="form-group">
-                <label for="email">Corporate Identity</label>
-                <input type="email" id="email" name="email" class="form-control" required placeholder="name@company.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Access Key</label>
-                <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
-            </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem;">
-                Authenticate <i class="fa-solid fa-arrow-right-to-bracket"></i>
-            </button>
-        </form>
-        
-        <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-            <p style="font-size: 0.85rem; color: var(--text-muted);">
-                New to the platform? <a href="{{ url_for('auth.register') }}" style="font-weight: 600;">Initialize Account</a>
+    </div>
+
+    <!-- Image Side -->
+    <div class="split-image" style="background-image: url('{{ url_for('static', filename='images/auth_bg.png') }}');">
+        <div class="split-image-content">
+            <h3 style="font-size: 2.5rem; margin-bottom: 1rem; color: white;">Discover the top 1% of talent.</h3>
+            <p style="font-size: 1.125rem; opacity: 0.9; max-width: 480px; color: white;">
+                Our AI-driven matching algorithm ensures you spend time interviewing the right people, not screening resumes.
             </p>
         </div>
     </div>

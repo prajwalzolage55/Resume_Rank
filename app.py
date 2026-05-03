@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
-from sentence_transformers import SentenceTransformer
+# sentence_transformers is imported lazily in get_model() below
 from sklearn.metrics.pairwise import cosine_similarity
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
@@ -21,6 +21,15 @@ from langchain_core.output_parsers import StrOutputParser
 
 # --- CONFIGURATION ---
 load_dotenv()
+
+# Startup diagnostic: verify MONGO_URI is loaded
+_uri = os.environ.get('MONGO_URI', '')
+if _uri:
+    # Mask password in output
+    _masked = re.sub(r'://([^:]+):([^@]+)@', r'://\1:****@', _uri)
+    print(f"[STARTUP] MONGO_URI loaded: {_masked}", flush=True)
+else:
+    print("[STARTUP] WARNING: MONGO_URI is not set!", flush=True)
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
@@ -109,6 +118,7 @@ _model = None
 def get_model():
     global _model
     if _model is None:
+        from sentence_transformers import SentenceTransformer
         _model = SentenceTransformer('all-MiniLM-L6-v2')
     return _model
 

@@ -1,69 +1,106 @@
 {% extends "base.html" %}
+{% block page_title %}ResumeRank | AI Recruitment Intelligence{% endblock %}
 
 {% block content %}
-<div class="hero-section">
-    <div class="hero-gradient"></div>
-    
-    <h1 class="hero-title animate-fade">
-        Elevate Your Hiring with <br>
-        <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Recruitment Intelligence</span>
-    </h1>
-    
-    <p class="hero-subtitle animate-fade" style="animation-delay: 0.1s;">
-        ResumeRank uses advanced Neural Language Models to automate screening, ranking, and skill gap analysis—empowering teams to find the perfect match in seconds.
-    </p>
-    
-    {% if not session.get('user_id') %}
-    <div class="animate-fade" style="display: flex; gap: 1.25rem; justify-content: center; animation-delay: 0.2s;">
-        <a href="{{ url_for('auth.register') }}?role=recruiter" class="btn btn-primary">
-            <i class="fa-solid fa-briefcase"></i> I am a Recruiter
-        </a>
-        <a href="{{ url_for('auth.register') }}?role=candidate" class="btn btn-secondary">
-            <i class="fa-solid fa-user-tie"></i> I am a Candidate
-        </a>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-wrapper">
+        <div class="hero-content animate-fade-up">
+            <div class="badge badge-orange" style="margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-sparkles" style="margin-right: 0.5rem;"></i> ResumeRank AI 2.0
+            </div>
+            <h1>Hire the top 1% with <span>Precision AI</span></h1>
+            <p>
+                Eliminate bias and accelerate your hiring pipeline. Our semantic models analyze resumes against your job descriptions to rank candidates with mathematical precision.
+            </p>
+            
+            <div class="flex items-center gap-2 flex-wrap">
+                {% if not session.get('user_id') %}
+                    <a href="{{ url_for('auth.register') }}?role=recruiter" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                        Start Recruiting
+                    </a>
+                    <a href="{{ url_for('auth.register') }}?role=candidate" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                        I'm a Candidate
+                    </a>
+                {% else %}
+                    {% if session.get('role') == 'super_admin' %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Enter Admin Console</a>
+                    {% elif session.get('role') == 'recruiter' %}
+                        <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{{ url_for('candidate.dashboard') }}" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">View My Matches</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center gap-3" style="margin-top: 3rem;">
+                <div class="flex -space-x-2">
+                    <!-- Fake avatars -->
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #E5E7EB; border: 2px solid white; z-index: 3;"></div>
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #D1D5DB; border: 2px solid white; z-index: 2; margin-left: -15px;"></div>
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #9CA3AF; border: 2px solid white; z-index: 1; margin-left: -15px;"></div>
+                </div>
+                <div class="text-sm">
+                    <strong class="text-primary">10,000+</strong> recruiters already onboard.
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-image-container animate-fade-up delay-200">
+            <img src="{{ url_for('static', filename='images/hero.png') }}" alt="AI Recruitment Visualization">
+        </div>
     </div>
-    {% else %}
-    <div class="animate-fade" style="animation-delay: 0.2s;">
-        {% if session.get('role') == 'super_admin' %}
-            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">Access Admin Console <i class="fa-solid fa-arrow-right"></i></a>
-        {% elif session.get('role') == 'recruiter' %}
-            <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-primary">Go to Recruiter Panel <i class="fa-solid fa-arrow-right"></i></a>
-        {% else %}
-            <a href="{{ url_for('candidate.dashboard') }}" class="btn btn-primary">Go to Dashboard <i class="fa-solid fa-arrow-right"></i></a>
-        {% endif %}
-    </div>
-    {% endif %}
+</section>
 
-    <div class="feature-grid animate-fade" style="animation-delay: 0.4s;">
-        <div class="glass-card">
-            <div style="width: 54px; height: 54px; background: rgba(79, 70, 229, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-microchip" style="font-size: 1.5rem; color: var(--primary);"></i>
-            </div>
-            <h3>Neural Parsing</h3>
-            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
-                State-of-the-art PDF extraction powered by spaCy and industrial-grade NLP libraries.
-            </p>
+<!-- Stats / Social Proof -->
+<section style="background: var(--c-black-light); padding: 3rem 0; border-bottom: 1px solid var(--border);">
+    <div class="container grid grid-cols-4 gap-4 text-center">
+        <div>
+            <div class="text-xl font-bold" style="color: var(--c-white); font-family: 'Outfit'; font-size: 2rem;">99.8%</div>
+            <div class="text-sm text-muted text-uppercase" style="letter-spacing: 0.1em;">Parsing Accuracy</div>
         </div>
-        
-        <div class="glass-card">
-            <div style="width: 54px; height: 54px; background: rgba(16, 185, 129, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-ranking-star" style="font-size: 1.5rem; color: var(--secondary);"></i>
-            </div>
-            <h3>Semantic Ranking</h3>
-            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
-                Sentence Transformers map resumes to dense vector spaces for mathematically precise matching.
-            </p>
+        <div>
+            <div class="text-xl font-bold" style="color: var(--c-white); font-family: 'Outfit'; font-size: 2rem;">10x</div>
+            <div class="text-sm text-muted text-uppercase" style="letter-spacing: 0.1em;">Faster Screening</div>
         </div>
-        
-        <div class="glass-card">
-            <div style="width: 54px; height: 54px; background: rgba(245, 158, 11, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-brain" style="font-size: 1.5rem; color: var(--warning);"></i>
-            </div>
-            <h3>LLM Insights</h3>
-            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.95rem;">
-                Deep analysis using Llama 3 models provides qualitative feedback and skill gap reports for every application.
-            </p>
+        <div>
+            <div class="text-xl font-bold" style="color: var(--c-white); font-family: 'Outfit'; font-size: 2rem;">Zero</div>
+            <div class="text-sm text-muted text-uppercase" style="letter-spacing: 0.1em;">Human Bias</div>
+        </div>
+        <div>
+            <div class="text-xl font-bold" style="color: var(--c-white); font-family: 'Outfit'; font-size: 2rem;">1M+</div>
+            <div class="text-sm text-muted text-uppercase" style="letter-spacing: 0.1em;">Resumes Processed</div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Features Section -->
+<section style="padding: 8rem 0; background: var(--bg-body);">
+    <div class="container">
+        <div class="section-title animate-fade-up">
+            <h2>The ultimate recruitment operating system</h2>
+            <p>Everything you need to scale your hiring process without compromising on talent quality.</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <div class="feature-card animate-fade-up delay-100">
+                <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
+                <h3>Neural Parsing</h3>
+                <p>State-of-the-art PDF extraction powered by industrial-grade NLP libraries. We don't just read text; we understand context and career trajectories.</p>
+            </div>
+
+            <div class="feature-card animate-fade-up delay-200">
+                <div class="feature-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Semantic Ranking</h3>
+                <p>Sentence Transformers map resumes to dense vector spaces. Stop relying on keyword matching and start matching based on true semantic capability.</p>
+            </div>
+
+            <div class="feature-card animate-fade-up delay-300">
+                <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h3>LLM Deep Insights</h3>
+                <p>Get qualitative feedback and immediate skill gap reports for every application before you even schedule the first interview call.</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
